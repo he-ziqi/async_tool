@@ -1,4 +1,4 @@
-package com.example.demo.juc.async.task;
+package async.task;
 
 /**
  * @author hzq

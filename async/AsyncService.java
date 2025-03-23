@@ -1,8 +1,8 @@
-package com.example.demo.juc.async;
+package async;
 
-import com.example.demo.juc.async.task.AsyncTask;
-import com.example.demo.juc.async.task.AsyncTaskChain;
-import com.example.demo.juc.async.task.AsyncVoidTask;
+import async.task.AsyncTask;
+import async.task.AsyncTaskChain;
+import async.task.AsyncVoidTask;
 
 /**
  * @author hzq

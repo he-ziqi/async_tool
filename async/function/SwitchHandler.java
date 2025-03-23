@@ -1,4 +1,4 @@
-package com.example.demo.juc.async.function;
+package async.function;
 
 /**
  * @author hzq

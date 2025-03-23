@@ -1,4 +1,4 @@
-package com.example.demo.juc.async.config;
+package async.config;
 
 import org.springframework.context.annotation.*;
 import org.springframework.core.type.AnnotatedTypeMetadata;

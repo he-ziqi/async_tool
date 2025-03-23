@@ -1,4 +1,4 @@
-package com.example.demo.juc.async.config;
+package async.config;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;

@@ -1,13 +1,12 @@
-package com.example.demo.juc.async;
+package async;
 
-import com.example.demo.juc.async.task.CallableTask;
-import com.example.demo.juc.async.task.Task;
+import async.function.CollectionHandler;
+import async.task.CallableTask;
+import async.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -67,17 +66,14 @@ public interface AsyncHandler extends AsyncService {
      * 任务列表校验
      */
     default Task[] tasksCheck(Task... tasks){
-        if(Objects.isNull(tasks) || tasks.length == 0){
-            throw new RuntimeException("异步操作至少要有一个任务");
-        }
-        List<Task> validTasks = new ArrayList<>(tasks.length);
-        for (int i = 0; i < tasks.length; i++) {
-            if(!illegalTask(tasks[i])) validTasks.add(tasks[i]);
-        }
-        if(validTasks.isEmpty()){
-            throw new RuntimeException("异步操作至少要有一个有效任务");
-        }
-        return validTasks.toArray(new Task[validTasks.size()]);
+        return CollectionHandler.ifPresent(tasks,t -> {
+            List<Task> validTasks = new ArrayList<>(t.length);
+            for (int i = 0; i < t.length; i++) {
+                if(!illegalTask(t[i])) validTasks.add(tasks[i]);
+            }
+            CollectionHandler.requireNonNull(validTasks,() -> new RuntimeException("异步操作至少要有一个有效任务"));
+            return validTasks.toArray(new Task[validTasks.size()]);
+        }, () -> null);
     }
 
     /**

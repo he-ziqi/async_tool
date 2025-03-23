@@ -1,11 +1,11 @@
-package com.example.demo.juc.async.impl;
+package async.impl;
 
-import com.example.demo.juc.async.AsyncHandler;
-import com.example.demo.juc.async.function.SwitchHandler;
-import com.example.demo.juc.async.task.AsyncTask;
-import com.example.demo.juc.async.task.AsyncTaskChain;
-import com.example.demo.juc.async.task.AsyncVoidTask;
-import com.example.demo.juc.async.task.Task;
+import async.AsyncHandler;
+import async.function.SwitchHandler;
+import async.task.AsyncTask;
+import async.task.AsyncTaskChain;
+import async.task.AsyncVoidTask;
+import async.task.Task;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
