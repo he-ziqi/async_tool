@@ -1,4 +1,3 @@
-
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
@@ -51,6 +50,22 @@ public interface CollectionUtil {
         return requireNonNull(arr, () -> new NullPointerException(message));
     }
 
+    static <T> T[] requireNonNullElse(T[] arr, T[] defaultValue){
+        return isNotEmpty(arr) ? arr : requireNonNull(defaultValue,"default array is null");
+    }
+
+    static <T> T[] requireNonNullElse(T[] arr, Supplier<? extends T[]> defaultValueSupplier){
+        return isNotEmpty(arr) ? arr : requireNonNull(Objects.requireNonNull(defaultValueSupplier,"default value supplier is null").get(), "default value supplier is null");
+    }
+
+    static <T> T[] orElse(T[] arr, T[] defaultValue){
+        return isNotEmpty(arr) ? arr : defaultValue;
+    }
+
+    static <T> T[] orElseGet(T[] arr, Supplier<? extends T[]> defaultValueSupplier){
+        return isNotEmpty(arr) ? arr : (Objects.nonNull(defaultValueSupplier) ? defaultValueSupplier.get() : null);
+    }
+
     static <T,C extends Collection<? super T>,E extends Throwable> C requireNonNull(C c, Supplier<? extends E> ex) throws E {
         if(isNotEmpty(c)) return c;
         if(Objects.nonNull(ex)) throw ex.get();
@@ -61,6 +76,22 @@ public interface CollectionUtil {
         return requireNonNull(c, () -> new NullPointerException(message));
     }
 
+    static <T,C extends Collection<? super T>> C requireNonNullElse(C c, C defaultValue){
+        return isNotEmpty(c) ? c : requireNonNull(defaultValue,"default collection is empty");
+    }
+
+    static <T,C extends Collection<? super T>> C requireNonNullElseGet(C c, Supplier<? extends C> defaultValueSupplier){
+        return isNotEmpty(c) ? c : requireNonNull(Objects.requireNonNull(defaultValueSupplier,"default value supplier is null").get(),"default value supplier is null");
+    }
+
+    static <T,C extends Collection<? super T>> C orElse(C c, C defaultValue){
+        return isNotEmpty(c) ? c : defaultValue;
+    }
+
+    static <T,C extends Collection<? super T>> C orElseGet(C c, Supplier<? extends C> defaultValueSupplier){
+        return isNotEmpty(c) ? c : (Objects.nonNull(defaultValueSupplier) ? defaultValueSupplier.get() : null);
+    }
+
     static <K,V,M extends Map<? super K,? super V>,E extends Throwable> M requireNonNull(M m, Supplier<? extends E> ex) throws E {
         if(isNotEmpty(m)) return m;
         if(Objects.nonNull(ex)) throw ex.get();
@@ -69,6 +100,22 @@ public interface CollectionUtil {
 
     static <K,V,M extends Map<K,V>> M requireNonNull(M m, String message){
         return requireNonNull(m, () -> new NullPointerException(message));
+    }
+
+    static <K,V,M extends Map<K,V>> M requireNonNullElse(M m, M defaultValue){
+        return isNotEmpty(m) ? m : requireNonNull(defaultValue,"default map value is null");
+    }
+
+    static <K,V,M extends Map<K,V>> M requireNonNullElseGet(M m, Supplier<? extends M> defaultValueSupplier){
+        return isNotEmpty(m) ? m : requireNonNull(Objects.requireNonNull(defaultValueSupplier,"default value supplier is null").get(), "default value supplier is null");
+    }
+
+    static <K,V,M extends Map<K,V>> M orElse(M m, M defaultValue){
+        return isNotEmpty(m) ? m : defaultValue;
+    }
+
+    static <K,V,M extends Map<K,V>> M orElseGet(M m, Supplier<? extends M> defaultValueSupplier){
+        return isNotEmpty(m) ? m : (Objects.nonNull(defaultValueSupplier) ? defaultValueSupplier.get() : null);
     }
 
     static <T> boolean isNotEmpty(T[] arr) {
