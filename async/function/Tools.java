@@ -309,6 +309,49 @@ public interface Tools {
         static LocalDateTime convert(Date date, ZoneId zone) {
             return Objects.requireNonNull(date,"Date转换为LocalDateTime时入参为空").toInstant().atZone(Objects.requireNonNull(zone,"Date转换为LocalDateTime时时区为空")).toLocalDateTime();
         }
+
+        static <R> R ifPresent(LocalDateTime time, Function<LocalDateTime, R> handler, Supplier<R> other) {
+            return Objects.nonNull(time) ? handler.apply(time) : (Objects.nonNull(other) ? other.get() : null);
+        }
+
+        static void ifPresent(LocalDateTime time, Consumer<LocalDateTime> handler) {
+            if (Objects.nonNull(time)) handler.accept(time);
+        }
+
+        static LocalDateTime orElse(LocalDateTime time, LocalDateTime defaultValue) {
+            return Objects.nonNull(time) ? time : defaultValue;
+        }
+
+        static LocalDateTime orElseGet(LocalDateTime time, Supplier<LocalDateTime> defaultValueSupplier) {
+            return Objects.nonNull(time) ? time : (Objects.nonNull(defaultValueSupplier) ? defaultValueSupplier.get() : null);
+        }
+
+        static LocalDateTime requireNonNull(LocalDateTime time, String message) {
+            if (Objects.isNull(time)) throw new NullPointerException(message);
+            return time;
+        }
+
+        static LocalDateTime requireNonNullElse(LocalDateTime time, LocalDateTime defaultValue) {
+            return Objects.nonNull(time) ? time : requireNonNull(defaultValue, "默认值不能为空");
+        }
+
+        static LocalDateTime requireNonNullElseGet(LocalDateTime time, Supplier<LocalDateTime> defaultValueSupplier) {
+            return Objects.nonNull(time) ? time : requireNonNull(Objects.nonNull(defaultValueSupplier) ? defaultValueSupplier.get() : null, "默认值提供函数不能为空");
+        }
+
+        static <E extends Throwable> LocalDateTime requireNonNull(LocalDateTime time, Supplier<E> exceptionSupplier) throws E {
+            if (Objects.nonNull(time)) return time;
+            if (Objects.nonNull(exceptionSupplier)) throw exceptionSupplier.get();
+            throw new NullPointerException("time is null");
+        }
+
+        static <E extends Throwable> LocalDateTime requireNonNullElse(LocalDateTime time, LocalDateTime defaultValue, Supplier<E> exceptionSupplier) throws E {
+            return Objects.nonNull(time) ? time : requireNonNull(defaultValue, exceptionSupplier);
+        }
+
+        static <E extends Throwable> LocalDateTime requireNonNullElseGet(LocalDateTime time, Supplier<LocalDateTime> defaultValueSupplier, Supplier<E> exceptionSupplier) throws E {
+            return Objects.nonNull(time) ? time : requireNonNull(Objects.nonNull(defaultValueSupplier) ? defaultValueSupplier.get() : null, exceptionSupplier);
+        }
     }
 
     interface StringTool {
@@ -519,6 +562,49 @@ public interface Tools {
         static boolean isPhoneNumber(String input) {
             return matches(input, "^1[3-9]\\d{9}$");
         }
+
+        static <R> R ifPresent(String str, Function<String, R> handler, Supplier<R> other) {
+            return isNotEmpty(str) ? handler.apply(str) : (Objects.nonNull(other) ? other.get() : null);
+        }
+
+        static void ifPresent(String str, Consumer<String> handler) {
+            if (isNotEmpty(str)) handler.accept(str);
+        }
+
+        static String orElse(String str, String defaultValue) {
+            return isNotEmpty(str) ? str : defaultValue;
+        }
+
+        static String orElseGet(String str, Supplier<String> defaultValueSupplier) {
+            return isNotEmpty(str) ? str : (Objects.nonNull(defaultValueSupplier) ? defaultValueSupplier.get() : null);
+        }
+
+        static String requireNonNull(String str, String message) {
+            if (Objects.isNull(str)) throw new NullPointerException(message);
+            return str;
+        }
+
+        static String requireNonNullElse(String str, String defaultValue) {
+            return isNotEmpty(str) ? str : requireNonNull(defaultValue, "默认值不能为空");
+        }
+
+        static String requireNonNullElseGet(String str, Supplier<String> defaultValueSupplier) {
+            return isNotEmpty(str) ? str : requireNonNull(Objects.nonNull(defaultValueSupplier) ? defaultValueSupplier.get() : null, "默认值提供函数不能为空");
+        }
+
+        static <E extends Throwable> String requireNonNull(String str, Supplier<E> exceptionSupplier) throws E {
+            if (isEmpty(str)) return str;
+            if (Objects.nonNull(exceptionSupplier)) throw exceptionSupplier.get();
+            throw new NullPointerException("str is null");
+        }
+
+        static <E extends Throwable> String requireNonNullElse(String str, String defaultValue, Supplier<E> exceptionSupplier) throws E {
+            return isNotEmpty(str) ? str : requireNonNull(defaultValue, exceptionSupplier);
+        }
+
+        static <E extends Throwable> String requireNonNullElseGet(String str, Supplier<String> defaultValueSupplier, Supplier<E> exceptionSupplier) throws E {
+            return isNotEmpty(str) ? str : requireNonNull(Objects.nonNull(defaultValueSupplier) ? defaultValueSupplier.get() : null, exceptionSupplier);
+        }
     }
 
     interface CryptoTool {
@@ -572,8 +658,7 @@ public interface Tools {
 
         // Base64解码
         static String base64Decode(String encodedData) {
-            byte[] decodedBytes = Base64.getDecoder().decode(encodedData);
-            return new String(decodedBytes, CHARTSET);
+            return new String(Base64.getDecoder().decode(encodedData), CHARTSET);
         }
     }
 
@@ -640,6 +725,49 @@ public interface Tools {
         static int compareUUIDs(UUID uuid1, UUID uuid2) {
             return uuid1.compareTo(uuid2);
         }
+
+        static <R> R ifPresent(UUID uuid, Function<UUID, R> handler, Supplier<R> other) {
+            return Objects.nonNull(uuid) ? handler.apply(uuid) : (Objects.nonNull(other) ? other.get() : null);
+        }
+
+        static void ifPresent(UUID uuid, Consumer<UUID> handler) {
+            if (Objects.nonNull(uuid)) handler.accept(uuid);
+        }
+
+        static UUID orElse(UUID uuid, UUID defaultValue) {
+            return Objects.nonNull(uuid) ? uuid : defaultValue;
+        }
+
+        static UUID orElseGet(UUID uuid, Supplier<UUID> defaultValueSupplier) {
+            return Objects.nonNull(uuid) ? uuid : (Objects.nonNull(defaultValueSupplier) ? defaultValueSupplier.get() : null);
+        }
+
+        static UUID requireNonNull(UUID uuid, String message) {
+            if (Objects.isNull(uuid)) throw new NullPointerException(message);
+            return uuid;
+        }
+
+        static UUID requireNonNullElse(UUID uuid, UUID defaultValue) {
+            return Objects.nonNull(uuid) ? uuid : requireNonNull(defaultValue, "默认值不能为空");
+        }
+
+        static UUID requireNonNullElseGet(UUID uuid, Supplier<UUID> defaultValueSupplier) {
+            return Objects.nonNull(uuid) ? uuid : requireNonNull(Objects.nonNull(defaultValueSupplier) ? defaultValueSupplier.get() : null, "默认值提供函数不能为空");
+        }
+
+        static <E extends Throwable> UUID requireNonNull(UUID uuid, Supplier<E> exceptionSupplier) throws E {
+            if (Objects.nonNull(uuid)) return uuid;
+            if (Objects.nonNull(exceptionSupplier)) throw exceptionSupplier.get();
+            throw new NullPointerException("uuid is null");
+        }
+
+        static <E extends Throwable> UUID requireNonNullElse(UUID uuid, UUID defaultValue, Supplier<E> exceptionSupplier) throws E {
+            return Objects.nonNull(uuid) ? uuid : requireNonNull(defaultValue, exceptionSupplier);
+        }
+
+        static <E extends Throwable> UUID requireNonNullElseGet(UUID uuid, Supplier<UUID> defaultValueSupplier, Supplier<E> exceptionSupplier) throws E {
+            return Objects.nonNull(uuid) ? uuid : requireNonNull(Objects.nonNull(defaultValueSupplier) ? defaultValueSupplier.get() : null, exceptionSupplier);
+        }
     }
     
     interface Base64Tool {
@@ -694,6 +822,7 @@ public interface Tools {
                 fileOutputStream.write(decodedBytes);
             }
         }
+        
     }
     
     interface ByteTool {
@@ -802,6 +931,57 @@ public interface Tools {
             }
             return true;
         }
+        
+        static boolean isEmpty(byte[] bytes) {
+            return Objects.isNull(bytes) || bytes.length == 0;
+        }
+        
+        static boolean isNotEmpty(byte[] bytes) {
+            return !isEmpty(bytes);
+        }
+
+        static <R> R ifPresent(byte[] bytes, Function<byte[], R> handler, Supplier<R> other) {
+            return isNotEmpty(bytes) && bytes.length > 0 ? handler.apply(bytes) : (Objects.nonNull(other) ? other.get() : null);
+        }
+
+        static void ifPresent(byte[] bytes, Consumer<byte[]> handler) {
+            if (isNotEmpty(bytes)) handler.accept(bytes);
+        }
+
+        static byte[] orElse(byte[] bytes, byte[] defaultValue) {
+            return isNotEmpty(bytes) ? bytes : defaultValue;
+        }
+
+        static byte[] orElseGet(byte[] bytes, Supplier<byte[]> defaultValueSupplier) {
+            return isNotEmpty(bytes) ? bytes : (Objects.nonNull(defaultValueSupplier) ? defaultValueSupplier.get() : null);
+        }
+
+        static byte[] requireNonNull(byte[] bytes, String message) {
+            if (isEmpty(bytes)) throw new NullPointerException(message);
+            return bytes;
+        }
+
+        static <E extends Throwable> byte[] requireNonNull(byte[] bytes, Supplier<? extends E> exceptionSupplier) throws E{
+            if (isNotEmpty(bytes)) return bytes;
+            if (Objects.nonNull(exceptionSupplier)) throw exceptionSupplier.get();
+            throw new NullPointerException("bytes is null");
+        }
+
+        static byte[] requireNonNullElse(byte[] bytes, byte[] defaultValue) {
+            return isNotEmpty(bytes) ? bytes : requireNonNull(defaultValue, "默认值不能为空");
+        }
+
+        static byte[] requireNonNullElseGet(byte[] bytes, Supplier<byte[]> defaultValueSupplier) {
+            return isNotEmpty(bytes) ? bytes : requireNonNull(Objects.nonNull(defaultValueSupplier) ? defaultValueSupplier.get() : null, "默认值提供函数不能为空");
+        }
+
+        static <E extends Throwable> byte[] requireNonNullElse(byte[] bytes, byte[] defaultValue, Supplier<E> exceptionSupplier) throws E {
+            return isNotEmpty(bytes) ? bytes : requireNonNull(defaultValue, exceptionSupplier);
+        }
+
+        static <E extends Throwable> byte[] requireNonNullElseGet(byte[] bytes, Supplier<byte[]> defaultValueSupplier, Supplier<E> exceptionSupplier) throws E {
+            return isNotEmpty(bytes) ? bytes : requireNonNull(Objects.nonNull(defaultValueSupplier) ? defaultValueSupplier.get() : null, exceptionSupplier);
+        }
     }
     
     interface FileTool {
@@ -837,6 +1017,7 @@ public interface Tools {
         }
 
         // 删除目录（递归删除）
+        @SuppressWarnings("all")
         static void deleteDirectory(String dirPath) throws IOException {
             Path path = Paths.get(dirPath);
             if (Files.exists(path)) {
@@ -882,5 +1063,56 @@ public interface Tools {
             }
             return fileList;
         }
+
+        static <R> R ifPresent(File file, Function<File, R> handler, Supplier<R> other) {
+            return Objects.nonNull(file) ? handler.apply(file) : (Objects.nonNull(other) ? other.get() : null);
+        }
+
+        static void ifPresent(File file, Consumer<File> handler) {
+            if (Objects.nonNull(file)) handler.accept(file);
+        }
+        
+        // orElse 方法
+        static File orElse(File file, File defaultValue) {
+            return Objects.nonNull(file) ? file : defaultValue;
+        }
+
+        // orElseGet 方法
+        static File orElseGet(File file, Supplier<File> defaultValueSupplier) {
+            return Objects.nonNull(file) ? file : (Objects.nonNull(defaultValueSupplier) ? defaultValueSupplier.get() : null);
+        }
+
+        // requireNonNull 方法
+        static File requireNonNull(File file, String message) {
+            if (Objects.isNull(file)) throw new NullPointerException(message);
+            return file;
+        }
+
+        static <E extends Throwable> File requireNonNull(File file, Supplier<? extends E> exceptionSupplier) throws E{
+            if (Objects.nonNull(file)) return file;
+            if (Objects.nonNull(exceptionSupplier)) throw exceptionSupplier.get();
+            throw new NullPointerException("file is null");
+        }
+
+        // requireNonNullElse 方法
+        static File requireNonNullElse(File file, File defaultValue) {
+            return Objects.nonNull(file) ? file : requireNonNull(defaultValue, "默认值不能为空");
+        }
+
+        // requireNonNullElseGet 方法
+        static File requireNonNullElseGet(File file, Supplier<File> defaultValueSupplier) {
+            return Objects.nonNull(file) ? file : requireNonNull(Objects.nonNull(defaultValueSupplier) ? defaultValueSupplier.get() : null, "默认值提供函数不能为空");
+        }
+        
+        // requireNonNullElse 方法（带异常 Supplier）
+        static <E extends Throwable> File requireNonNullElse(File file, File defaultValue, Supplier<E> exceptionSupplier) throws E {
+            return Objects.nonNull(file) ? file : requireNonNull(defaultValue, exceptionSupplier);
+        }
+        
+        // requireNonNullElseGet 方法（带异常 Supplier）
+        static <E extends Throwable> File requireNonNullElseGet(File file, Supplier<File> defaultValueSupplier, Supplier<E> exceptionSupplier) throws E {
+            return Objects.nonNull(file) ? file : requireNonNull(Objects.nonNull(defaultValueSupplier) ? defaultValueSupplier.get() : null, exceptionSupplier);
+        }
     }
+    
 }
