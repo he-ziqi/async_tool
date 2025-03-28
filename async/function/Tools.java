@@ -1,3 +1,4 @@
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
@@ -713,12 +714,7 @@ public interface Tools {
 
         // 校验字符串是否为有效的 UUID 格式
         static boolean isValidUUID(String uuid) {
-            if (uuid == null) {
-                return false;
-            }
-            // UUID 的正则表达式
-            String regex = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
-            return StringTool.matches(uuid,regex);
+            return Objects.nonNull(uuid) && StringTool.matches(uuid,"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
         }
 
         // 比较两个 UUID 的顺序
@@ -807,6 +803,7 @@ public interface Tools {
         }
 
         // 将文件编码为 Base64 字符串
+        @SuppressWarnings("all")
         static String encodeFileToBase64(File file) throws IOException {
             try (FileInputStream fileInputStream = new FileInputStream(file)) {
                 byte[] fileBytes = new byte[(int) file.length()];
@@ -822,7 +819,7 @@ public interface Tools {
                 fileOutputStream.write(decodedBytes);
             }
         }
-        
+
     }
     
     interface ByteTool {
@@ -931,11 +928,11 @@ public interface Tools {
             }
             return true;
         }
-        
+
         static boolean isEmpty(byte[] bytes) {
             return Objects.isNull(bytes) || bytes.length == 0;
         }
-        
+
         static boolean isNotEmpty(byte[] bytes) {
             return !isEmpty(bytes);
         }
@@ -1071,7 +1068,7 @@ public interface Tools {
         static void ifPresent(File file, Consumer<File> handler) {
             if (Objects.nonNull(file)) handler.accept(file);
         }
-        
+
         // orElse 方法
         static File orElse(File file, File defaultValue) {
             return Objects.nonNull(file) ? file : defaultValue;
@@ -1103,16 +1100,16 @@ public interface Tools {
         static File requireNonNullElseGet(File file, Supplier<File> defaultValueSupplier) {
             return Objects.nonNull(file) ? file : requireNonNull(Objects.nonNull(defaultValueSupplier) ? defaultValueSupplier.get() : null, "默认值提供函数不能为空");
         }
-        
+
         // requireNonNullElse 方法（带异常 Supplier）
         static <E extends Throwable> File requireNonNullElse(File file, File defaultValue, Supplier<E> exceptionSupplier) throws E {
             return Objects.nonNull(file) ? file : requireNonNull(defaultValue, exceptionSupplier);
         }
-        
+
         // requireNonNullElseGet 方法（带异常 Supplier）
         static <E extends Throwable> File requireNonNullElseGet(File file, Supplier<File> defaultValueSupplier, Supplier<E> exceptionSupplier) throws E {
             return Objects.nonNull(file) ? file : requireNonNull(Objects.nonNull(defaultValueSupplier) ? defaultValueSupplier.get() : null, exceptionSupplier);
         }
     }
-    
+
 }
