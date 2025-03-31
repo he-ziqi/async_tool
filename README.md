@@ -15,3 +15,4 @@
 **AsyncVoidTask**：异步任务,无返回值  
 **AsyncCoroutineService**：使用quasar框架采用协程完成异步任务的执行  
 **AsyncThreadService**：使用CompletableFuture采用线程完成异步任务的执行
+##### 2.3、可参考代码中的Test类的用法
