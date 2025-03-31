@@ -8,6 +8,7 @@ import async.task.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Primary;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import java.util.concurrent.*;
  * @description 异步协程服务
  * @date 2024/6/6 20:03
  */
+@Primary
 @Service
 @Slf4j
 @SuppressWarnings("all")
