@@ -1,3 +1,10 @@
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import javax.annotation.Resource;
+import java.util.Collections;
+import java.util.concurrent.TimeUnit;
+
 @SpringBootTest
 public class AsyncTest {
 
@@ -52,6 +59,12 @@ public class AsyncTest {
         });
         //isBlock默认为ture 为ture时会阻塞当前线程 直到所有任务执行结束
         asyncService.run(false,asyncTask1, asyncTask2, asyncTask3,null,asyncTask);
+        try {
+            //此次异步任务执行为非阻塞执行，为了获取任务结果在此睡眠5秒 也可通过Task类的isCompleted()方法判断当前任务是否执行完成
+            TimeUnit.SECONDS.sleep(5);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         System.out.println(asyncTask.getTaskName() + ",result:" + asyncTask.getResult());
         System.out.println(asyncTask1.getTaskName() + ",result:" + asyncTask1.getResult());
         System.out.println(asyncTask2.getTaskName() + ",result:" + asyncTask2.getResult());
