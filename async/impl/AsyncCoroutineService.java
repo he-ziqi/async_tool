@@ -32,7 +32,7 @@ public class AsyncCoroutineService implements AsyncHandler, InitializingBean {
     @Resource(name = "asyncExecutor")
     private ExecutorService asyncExecutor;
 
-    private FiberExecutorScheduler scheduler = new FiberExecutorScheduler("fiberScheduler", Executors.newFixedThreadPool(100));
+    private FiberExecutorScheduler scheduler;
 
     @Override
     public <T> void run(AsyncTask<T>... tasks) {
