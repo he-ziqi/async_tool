@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 @SpringBootTest
 public class AsyncTest {
 
-    @Resource(name = "asyncCoroutineService")
+    @Resource
     private AsyncService asyncService;
     @Resource(name = "asyncThreadService")
     private AsyncService asyncService2;
@@ -16,17 +16,17 @@ public class AsyncTest {
     //无返回值任务测试
     @Test
     void voidTaskTest(){
-        AsyncVoidTask voidTask = new AsyncVoidTask(() -> {
+        AsyncVoidTask voidTask = new AsyncVoidTask("voidTask1",() -> {
             System.out.println("async task executed");
         });
-        AsyncVoidTask voidTask1 = new AsyncVoidTask(() -> {
+        AsyncVoidTask voidTask1 = new AsyncVoidTask("voidTask2",() -> {
             int a = 1/0;
             System.out.println("async task executed1");
         });
-        AsyncVoidTask voidTask2 = new AsyncVoidTask(() -> {
+        AsyncVoidTask voidTask2 = new AsyncVoidTask("voidTask3",() -> {
             System.out.println("async task executed2");
         });
-        AsyncVoidTask voidTask3 = new AsyncVoidTask(() -> {
+        AsyncVoidTask voidTask3 = new AsyncVoidTask("voidTask4",() -> {
             System.out.println("async task executed3");
         });
         asyncService.run(voidTask, voidTask1, voidTask2, voidTask3);
