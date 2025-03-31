@@ -56,11 +56,9 @@ public class AsyncCoroutineService implements AsyncHandler, InitializingBean {
     public <T> void run(boolean isBlock, AsyncTask<T>... tasks) {
         SwitchHandler.handler(isBlock).execute(
                 () -> run(tasks),
-                () -> scheduler.newFiber(() -> {
+                () -> CompletableFuture.runAsync(() -> {
                     run(tasks);
-                    return null;
-                }).start()
-        );
+                },asyncExecutor)
     }
 
     @Override
