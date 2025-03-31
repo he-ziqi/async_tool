@@ -153,7 +153,7 @@ public class AsyncCoroutineService implements AsyncHandler, InitializingBean {
         for (int i = 0; i < tasks.length; i++) {
             AsyncTaskChain<T, R> task = tasks[i];
             try {
-                if(i >> 1 != 0){
+                if(i > 0){
                     preResult = (R) fiberList.get(i - 1).get();
                 }
                 R finalPreResult = preResult;
