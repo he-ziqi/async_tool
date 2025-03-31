@@ -27,7 +27,8 @@ public class AsyncVoidTask implements Task{
     //任务是否执行结束
     private volatile boolean completed = false;
 
-    public AsyncVoidTask(Runnable task) {
+    public AsyncVoidTask(String taskName, Runnable task) {
+        this.taskName = taskName;
         this.task = task;
     }
 
