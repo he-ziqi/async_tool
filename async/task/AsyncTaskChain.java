@@ -43,21 +43,15 @@ public class AsyncTaskChain<T,R> implements CallableTask{
     private volatile boolean completed = false;
 
     public AsyncTaskChain(String taskName, Function<T,Supplier<R>> task) {
-        this.taskName = taskName;
-        this.task = task;
+        this(taskName,task,DEFAULT_TIMEOUT,DEFAULT_TIMEUNIT);
     }
 
     public AsyncTaskChain(String taskName, Function<T,Supplier<R>> task,long timeout,TimeUnit timeUnit) {
-        this.taskName = taskName;
-        this.task = task;
-        this.timeout = timeout;
-        this.timeUnit = timeUnit;
+        this(taskName, task,null,timeout,timeUnit);
     }
 
     public AsyncTaskChain(String taskName, Function<T,Supplier<R>> task, Function<? super Throwable, ? super R> exHandler) {
-        this.taskName = taskName;
-        this.task = task;
-        this.exHandler = exHandler;
+        this(taskName, task, exHandler, DEFAULT_TIMEOUT, DEFAULT_TIMEUNIT);
     }
 
     public AsyncTaskChain(String taskName, Function<T,Supplier<R>> task, Function<? super Throwable, ? super R> exHandler,long timeout,TimeUnit timeUnit) {
@@ -69,17 +63,8 @@ public class AsyncTaskChain<T,R> implements CallableTask{
     }
 
     @Override
-    public long getTimeout() {
-        return timeout;
-    }
-
-    @Override
     public <T> void setResult(T result) {
         this.result = (R) result;
     }
 
-    @Override
-    public boolean isComplete() {
-        return this.completed;
-    }
 }
