@@ -2,17 +2,19 @@ package async.impl;
 
 import co.paralleluniverse.fibers.Fiber;
 import co.paralleluniverse.fibers.FiberExecutorScheduler;
-import async.AsyncHandler;
-import async.function.SwitchHandler;
-import async.task.*;
+import concurrent.async.AsyncHandler;
+import concurrent.async.function.SwitchHandler;
+
+import concurrent.async.task.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 import org.springframework.context.annotation.Primary;
 
 import javax.annotation.Resource;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.*;
@@ -46,7 +48,7 @@ public class AsyncCoroutineService implements AsyncHandler, InitializingBean {
             try {
                 tasks[i].setResult(tasks[i].getTimeout() == CallableTask.DEFAULT_TIMEOUT ? fibers[i].get() : fibers[i].get(tasks[i].getTimeout(),tasks[i].getTimeUnit()));
             } catch (ExecutionException | InterruptedException | TimeoutException e) {
-                log.error("获取协程处理结果时异常,当前执行任务[{}],异常信息:{}", tasks[i].getTaskName(), e);
+                log.error("协程任务运行异常,当前执行任务[{}],异常原因:{},异常信息:", tasks[i].getTaskName(), e.getMessage(),e);
                 resultExHandler(tasks[i],e);
             } finally {
                 tasks[i].setCompleted(true);
@@ -60,7 +62,7 @@ public class AsyncCoroutineService implements AsyncHandler, InitializingBean {
                 () -> run(tasks),
                 () -> CompletableFuture.runAsync(() -> {
                     run(tasks);
-                },asyncExecutor)
+                },asyncExecutor));
     }
 
     @Override
@@ -75,7 +77,7 @@ public class AsyncCoroutineService implements AsyncHandler, InitializingBean {
             try {
                 tasks[i].setResult(tasks[i].getTimeout() == CallableTask.DEFAULT_TIMEOUT ? fibers[i].get() : fibers[i].get(tasks[i].getTimeout(), tasks[i].getTimeUnit()));
             } catch (ExecutionException | InterruptedException | TimeoutException e) {
-                log.error("获取协程处理结果时异常,当前执行任务[{}],异常信息:{}", tasks[i].getTaskName(), e);
+                log.error("协程任务运行异常,当前执行任务[{}],异常原因:{},异常信息:", tasks[i].getTaskName(), e.getMessage(),e);
                 resultExHandler(tasks[i], e);
             } finally {
                 tasks[i].setCompleted(true);
@@ -87,10 +89,9 @@ public class AsyncCoroutineService implements AsyncHandler, InitializingBean {
     public <T, R> void run(boolean isBlock, AsyncTaskChain<T, R>... tasks) {
         SwitchHandler.handler(isBlock).execute(
                 () -> run(tasks),
-                () -> scheduler.newFiber(() -> {
+                () -> CompletableFuture.runAsync(() -> {
                     run(tasks);
-                    return null;
-                }).start()
+                },asyncExecutor)
         );
     }
 
@@ -103,16 +104,20 @@ public class AsyncCoroutineService implements AsyncHandler, InitializingBean {
         }
         for (AsyncVoidTask task : tasks) {
             scheduler.newFiber(() -> {
+                Instant start = Instant.now();
                 try {
                     task.getTask().run();
                 } catch (Throwable e) {
-                    log.error("协程任务运行异常,当前执行任务[{}],异常信息:{}", task.getTaskName(), e);
+                    log.error("协程任务运行异常,当前执行任务[{}],异常原因:{},异常信息:", task.getTaskName(), e.getMessage(),e);
                     exHandler(Objects.isNull(task.getExHandler()) ? null : ex -> {
                         task.getExHandler().accept(e);
                         return null;
                     }, e, null, null, task.getTaskName());
                 } finally {
                     task.setCompleted(true);
+                    Instant end = Instant.now();
+                    Duration elapsed = Duration.between(start, end);
+                    log.info("任务[{}]执行完成,执行耗时[{}]ms", task.getTaskName(),elapsed.toMillis());
                 }
                 return null;
             }).start();
@@ -123,10 +128,9 @@ public class AsyncCoroutineService implements AsyncHandler, InitializingBean {
     public void run(boolean isBlock, AsyncVoidTask... tasks) {
         SwitchHandler.handler(isBlock).execute(
                 () -> run(tasks),
-                () -> scheduler.newFiber(() -> {
+                () -> CompletableFuture.runAsync(() -> {
                     run(tasks);
-                    return null;
-                }).start()
+                })
         );
     }
 
@@ -136,11 +140,16 @@ public class AsyncCoroutineService implements AsyncHandler, InitializingBean {
             AsyncTask<T> task = tasks[i];
             fiberList.add((Fiber<T>) scheduler.newFiber(() -> {
                 T result = null;
+                Instant start = Instant.now();
                 try {
                     result = task.getTask().get();
                 } catch (Throwable e) {
-                    log.error("协程任务运行异常,当前执行任务[{}],异常信息:{}", task.getTaskName(), e);
+                    log.error("协程任务运行异常,当前执行任务[{}],异常原因:{},异常信息:", task.getTaskName(), e.getMessage(),e);
                     return exHandler(task.getExHandler(), e, result, task.getExDefaultValue(), task.getTaskName());
+                } finally {
+                    Instant end = Instant.now();
+                    Duration elapsed = Duration.between(start, end);
+                    log.info("任务[{}]执行完成,执行耗时[{}]ms", task.getTaskName(),elapsed.toMillis());
                 }
                 return result;
             }));
@@ -161,11 +170,16 @@ public class AsyncCoroutineService implements AsyncHandler, InitializingBean {
                 R finalPreResult = preResult;
                 fiberList.add(scheduler.newFiber(() -> {
                     R result = null;
+                    Instant start = Instant.now();
                     try {
                         result = task.getTask().apply((T) finalPreResult).get();
                     } catch (Throwable e) {
                         log.error("协程任务运行异常,当前执行任务[{}],异常原因:{},异常信息:", task.getTaskName(), e.getMessage(),e);
                         return exHandler(task.getExHandler(), e, result, task.getExDefaultValue(), task.getTaskName());
+                    } finally {
+                        Instant end = Instant.now();
+                        Duration elapsed = Duration.between(start, end);
+                        log.info("任务[{}]执行完成,执行耗时[{}]ms", task.getTaskName(),elapsed.toMillis());
                     }
                     return result;
                 }));
