@@ -58,7 +58,7 @@ public interface AsyncHandler extends AsyncService {
      * @return 默认值
      */
     default <E extends Throwable,R> R defaultExHandler(E e, R defaultValue, String taskName){
-        log.error("任务[{}]执行时出现异常,异常信息:",taskName,e);
+        log.error("[默认异常处理]协程任务运行异常,当前执行任务[{}],异常原因:{}", taskName, e.getMessage());
         return defaultValue;
     }
 
