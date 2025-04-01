@@ -12,5 +12,5 @@ public interface Task {
 
     <W> W getTask();
 
-    boolean isComplete();
+    boolean isCompleted();
 }
