@@ -31,9 +31,4 @@ public class AsyncVoidTask implements Task{
         this.taskName = taskName;
         this.task = task;
     }
-
-    @Override
-    public boolean isComplete() {
-        return this.completed;
-    }
 }
