@@ -2,10 +2,10 @@ package async.impl;
 
 import co.paralleluniverse.fibers.Fiber;
 import co.paralleluniverse.fibers.FiberExecutorScheduler;
-import concurrent.async.AsyncHandler;
-import concurrent.async.function.SwitchHandler;
+import async.AsyncHandler;
+import async.function.SwitchHandler;
 
-import concurrent.async.task.*;
+import async.task.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
